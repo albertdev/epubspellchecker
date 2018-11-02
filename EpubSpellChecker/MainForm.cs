@@ -486,6 +486,12 @@ namespace EpubSpellChecker
 
                     e.Handled = true;
                 }
+                // if Control-Z is pressed on any cell of the row -> copy original to fixed text and start editing
+                else if (e.Control && e.KeyCode == Keys.Z)
+                {
+                    CopyOriginalAndEditFixedCell(grid.CurrentCell.RowIndex);
+                    e.Handled = true;
+                }
                 else if (e.Control && e.KeyCode == Keys.C)
                 {
                     try
@@ -508,6 +514,33 @@ namespace EpubSpellChecker
                     }
                 }
             }
+        }
+
+        private void CopyOriginalAndEditFixedCell(int rowIndex)
+        {
+            // if the row is valid
+            if (rowIndex < 0 || rowIndex >= grid.RowCount && grid.Rows[rowIndex] == null)
+                return;
+
+            var currentRow = grid.Rows[rowIndex];
+
+            // and there is a word entry bound
+            var we = currentRow.DataBoundItem as WordEntry;
+            if (we == null)
+                return;
+
+            we.FixedText = we.Text;
+
+            we.Ignore = false;
+
+            int fixedTextIndex = grid.Columns.IndexOf(FixedText);
+
+            grid.CurrentCell = currentRow.Cells[fixedTextIndex];
+            grid.BeginEdit(true);
+
+            // redraw the row
+            grid.InvalidateRow(rowIndex);
+            UpdateStatistics();
         }
 
         /// <summary>
