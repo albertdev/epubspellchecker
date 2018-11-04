@@ -287,48 +287,25 @@ namespace EpubSpellChecker
         /// <param name="e"></param>
         private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            // if the user might be selecting multiple rows using Shift or deselecting using Control
+            if (Control.ModifierKeys.HasFlag(Keys.Shift) || Control.ModifierKeys.HasFlag(Keys.Control))
+                return;
+
             // if the row is valid
             if (e.RowIndex < 0 || e.RowIndex >= grid.RowCount && grid.Rows[e.RowIndex] == null)
                 return;
 
-            // and there is a word entry bound
-            var we = grid.Rows[e.RowIndex].DataBoundItem as WordEntry;
-            if (we == null)
-                return;
-
             if (grid.Columns[e.ColumnIndex].Name == "Ignore")
             {
-                // toggle ignore of the word entry and redraw the row
-                we.Ignore = !we.Ignore;
-                grid.InvalidateRow(e.RowIndex);
-                UpdateStatistics();
+                IgnoreEntry(e.RowIndex);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "AddToDictionary")
             {
-                // add the word to the custom dictionary
-                we.IsUnknownWord = false;
-                we.UnknownType = "";
-                we.Suggestion = we.Text;
-
-                manager.AddToDictionary(we.Text);
-
-                //redraw the row
-                grid.InvalidateRow(e.RowIndex);
-                UpdateStatistics();
+                AddToDictionaryAndIgnoreEntry(e.RowIndex);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "Copy")
             {
-                // copy either the suggestion or the text if the suggestion is empty to the fixed text column for the current row
-                if (string.IsNullOrEmpty(we.Suggestion))
-                    we.FixedText = we.Text;
-                else
-                    we.FixedText = we.Suggestion;
-
-                we.Ignore = false;
-
-                // redraw the row
-                grid.InvalidateRow(e.RowIndex);
-                UpdateStatistics();
+                UseSuggestionForEntry(e.RowIndex);
             }
         }
 
@@ -475,15 +452,25 @@ namespace EpubSpellChecker
                 // if space is pressed on one of the 3 icons -> execute the action of that icon
                 if (e.KeyCode == Keys.Space)
                 {
-
-                    if (grid.CurrentCell.OwningColumn.Name == "Ignore" ||
-                        grid.CurrentCell.OwningColumn.Name == "AddToDictionary" ||
-                        grid.CurrentCell.OwningColumn.Name == "Copy")
+                    if (grid.CurrentCell.OwningColumn.Name == "Ignore")
                     {
-                        // do the action of the icon
-                        grid_CellContentClick(grid, new DataGridViewCellEventArgs(grid.CurrentCell.ColumnIndex, grid.CurrentCell.RowIndex));
+                        IgnoreEntry(grid.CurrentCell.RowIndex);
+                    }
+                    else if (grid.CurrentCell.OwningColumn.Name == "AddToDictionary")
+                    {
+                        AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
+                    }
+                    else if (grid.CurrentCell.OwningColumn.Name == "Copy")
+                    {
+                        UseSuggestionForEntry(grid.CurrentCell.RowIndex);
                     }
 
+                    e.Handled = true;
+                }
+                // if Control-A is pressed with selection but not when editing -> add to dictionary
+                else if (e.Control && e.KeyCode == Keys.A)
+                {
+                    AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
                     e.Handled = true;
                 }
                 // if Control-Z is pressed on any cell of the row -> copy original to fixed text and start editing
@@ -494,14 +481,7 @@ namespace EpubSpellChecker
                 }
                 else if (e.Control && e.KeyCode == Keys.C)
                 {
-                    try
-                    {
-                        Clipboard.SetText(grid.CurrentCell.Value + "");
-                    }
-                    catch (Exception ex)
-                    {
-                        MessageBox.Show("Unable to copy the cell content to clipboard: " + ex.GetType().FullName + " - " + ex.Message);
-                    }
+                    CopyToClipboard(grid.CurrentCell);
                 }
                 // if enter is pressed on an editable column -> start editing
                 else if (e.KeyCode == Keys.Enter)
@@ -513,6 +493,71 @@ namespace EpubSpellChecker
                         e.Handled = true;
                     }
                 }
+            }
+        }
+
+        private void IgnoreEntry(int rowIndex)
+        {
+            // find bound word entry or return if none available
+            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+            if (we == null)
+                return;
+
+            // toggle ignore of the word entry and redraw the row
+            we.Ignore = !we.Ignore;
+            grid.InvalidateRow(rowIndex);
+            UpdateStatistics();
+        }
+
+        private void UseSuggestionForEntry(int rowIndex)
+        {
+            // find bound word entry or return if none available
+            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+            if (we == null)
+                return;
+
+            // copy either the suggestion or the text if the suggestion is empty to the fixed text column for the current row
+            if (string.IsNullOrEmpty(we.Suggestion))
+                we.FixedText = we.Text;
+            else
+                we.FixedText = we.Suggestion;
+
+            we.Ignore = false;
+
+            // redraw the row
+            grid.InvalidateRow(rowIndex);
+            UpdateStatistics();
+        }
+
+        private void AddToDictionaryAndIgnoreEntry(int rowIndex)
+        {
+            // find bound word entry or return if none available
+            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+            if (we == null)
+                return;
+
+            // add the word to the custom dictionary
+            we.IsUnknownWord = false;
+            we.UnknownType = "";
+            we.Suggestion = we.Text;
+            we.FixedText = "";
+
+            manager.AddToDictionary(we.Text);
+
+            //redraw the row
+            grid.InvalidateRow(rowIndex);
+            UpdateStatistics();
+        }
+
+        private void CopyToClipboard(DataGridViewCell cell)
+        {
+            try
+            {
+                Clipboard.SetText(cell.Value + "");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to copy the cell content to clipboard: " + ex.GetType().FullName + " - " + ex.Message);
             }
         }
 
@@ -904,6 +949,46 @@ namespace EpubSpellChecker
             catch (Exception ex)
             {
                 MessageBox.Show("Error opening preferences: " + ex.GetType().FullName + " - " + ex.Message + Environment.NewLine + ex.StackTrace);
+            }
+        }
+
+        private void ignoreToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grid.CurrentCell != null)
+            {
+                IgnoreEntry(grid.CurrentCell.RowIndex);
+            }
+        }
+
+        private void editOriginalValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grid.CurrentCell != null)
+            {
+                CopyOriginalAndEditFixedCell(grid.CurrentCell.RowIndex);
+            }
+        }
+
+        private void copyCellValueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grid.CurrentCell != null)
+            {
+                CopyToClipboard(grid.CurrentCell);
+            }
+        }
+
+        private void addToDictionaryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grid.CurrentCell != null)
+            {
+                AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
+            }
+        }
+
+        private void useSuggestionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (grid.CurrentCell != null)
+            {
+                UseSuggestionForEntry(grid.CurrentCell.RowIndex);
             }
         }
     }

@@ -24,6 +24,12 @@
             this.saveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyCellValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ignoreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addToDictionaryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.useSuggestionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editOriginalValueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.recheckOCRPatternsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.copyAllSuggestionsToFixedTextToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,6 +87,7 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.toolsToolStripMenuItem,
             this.optionsToolStripMenuItem,
             this.helpToolStripMenuItem});
@@ -139,6 +146,61 @@
             this.exitToolStripMenuItem.Text = "E&xit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.copyCellValueToolStripMenuItem,
+            this.ignoreToolStripMenuItem,
+            this.addToDictionaryToolStripMenuItem,
+            this.useSuggestionToolStripMenuItem,
+            this.editOriginalValueToolStripMenuItem});
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.editToolStripMenuItem.Text = "&Edit";
+            // 
+            // copyCellValueToolStripMenuItem
+            // 
+            this.copyCellValueToolStripMenuItem.Name = "copyCellValueToolStripMenuItem";
+            this.copyCellValueToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
+            this.copyCellValueToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.copyCellValueToolStripMenuItem.Text = "&Copy to clipboard";
+            this.copyCellValueToolStripMenuItem.Click += new System.EventHandler(this.copyCellValueToolStripMenuItem_Click);
+            // 
+            // ignoreToolStripMenuItem
+            // 
+            this.ignoreToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.ignore_icon_16px;
+            this.ignoreToolStripMenuItem.Name = "ignoreToolStripMenuItem";
+            this.ignoreToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+            this.ignoreToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.ignoreToolStripMenuItem.Text = "&Ignore";
+            this.ignoreToolStripMenuItem.Click += new System.EventHandler(this.ignoreToolStripMenuItem_Click);
+            // 
+            // addToDictionaryToolStripMenuItem
+            // 
+            this.addToDictionaryToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.book_add;
+            this.addToDictionaryToolStripMenuItem.Name = "addToDictionaryToolStripMenuItem";
+            this.addToDictionaryToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
+            this.addToDictionaryToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.addToDictionaryToolStripMenuItem.Text = "&Add to dictionary";
+            this.addToDictionaryToolStripMenuItem.Click += new System.EventHandler(this.addToDictionaryToolStripMenuItem_Click);
+            // 
+            // useSuggestionToolStripMenuItem
+            // 
+            this.useSuggestionToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.arrow_right_blue;
+            this.useSuggestionToolStripMenuItem.Name = "useSuggestionToolStripMenuItem";
+            this.useSuggestionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Space)));
+            this.useSuggestionToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.useSuggestionToolStripMenuItem.Text = "Use &suggestion";
+            this.useSuggestionToolStripMenuItem.Click += new System.EventHandler(this.useSuggestionToolStripMenuItem_Click);
+            // 
+            // editOriginalValueToolStripMenuItem
+            // 
+            this.editOriginalValueToolStripMenuItem.Name = "editOriginalValueToolStripMenuItem";
+            this.editOriginalValueToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
+            this.editOriginalValueToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
+            this.editOriginalValueToolStripMenuItem.Text = "&Edit original value";
+            this.editOriginalValueToolStripMenuItem.Click += new System.EventHandler(this.editOriginalValueToolStripMenuItem_Click);
+            // 
             // toolsToolStripMenuItem
             // 
             this.toolsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -147,7 +209,7 @@
             this.toolStripMenuItem1,
             this.wordDistributionAnalysisToolStripMenuItem});
             this.toolsToolStripMenuItem.Name = "toolsToolStripMenuItem";
-            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(48, 20);
+            this.toolsToolStripMenuItem.Size = new System.Drawing.Size(47, 20);
             this.toolsToolStripMenuItem.Text = "&Tools";
             // 
             // recheckOCRPatternsToolStripMenuItem
@@ -636,6 +698,12 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showOnlyErrorsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ignoreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addToDictionaryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem copyCellValueToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem useSuggestionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editOriginalValueToolStripMenuItem;
     }
 }
 
