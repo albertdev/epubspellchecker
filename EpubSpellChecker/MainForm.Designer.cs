@@ -41,21 +41,14 @@
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grid = new System.Windows.Forms.DataGridView();
-            this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Suggestion = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Ignore = new System.Windows.Forms.DataGridViewImageColumn();
             this.AddToDictionary = new System.Windows.Forms.DataGridViewImageColumn();
             this.Copy = new System.Windows.Forms.DataGridViewImageColumn();
-            this.FixedText = new EpubSpellChecker.CustomAutocompleteColumn();
-            this.wordEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.txtFilter = new System.Windows.Forms.TextBox();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.lstOccurrences = new EpubSpellChecker.BufferedListBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.lblWordCount = new System.Windows.Forms.ToolStripStatusLabel();
             this.lblUnknown = new System.Windows.Forms.ToolStripStatusLabel();
@@ -70,10 +63,16 @@
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn3 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.textDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Type = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.countDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Suggestion = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.FixedText = new EpubSpellChecker.CustomAutocompleteColumn();
+            this.wordEntryBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.lstOccurrences = new EpubSpellChecker.BufferedListBox();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.wordEntryBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -81,6 +80,7 @@
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wordEntryBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -160,6 +160,7 @@
             // 
             // copyCellValueToolStripMenuItem
             // 
+            this.copyCellValueToolStripMenuItem.Enabled = false;
             this.copyCellValueToolStripMenuItem.Name = "copyCellValueToolStripMenuItem";
             this.copyCellValueToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C";
             this.copyCellValueToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -168,6 +169,7 @@
             // 
             // ignoreToolStripMenuItem
             // 
+            this.ignoreToolStripMenuItem.Enabled = false;
             this.ignoreToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.ignore_icon_16px;
             this.ignoreToolStripMenuItem.Name = "ignoreToolStripMenuItem";
             this.ignoreToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
@@ -177,6 +179,7 @@
             // 
             // addToDictionaryToolStripMenuItem
             // 
+            this.addToDictionaryToolStripMenuItem.Enabled = false;
             this.addToDictionaryToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.book_add;
             this.addToDictionaryToolStripMenuItem.Name = "addToDictionaryToolStripMenuItem";
             this.addToDictionaryToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A";
@@ -186,6 +189,7 @@
             // 
             // useSuggestionToolStripMenuItem
             // 
+            this.useSuggestionToolStripMenuItem.Enabled = false;
             this.useSuggestionToolStripMenuItem.Image = global::EpubSpellChecker.Properties.Resources.arrow_right_blue;
             this.useSuggestionToolStripMenuItem.Name = "useSuggestionToolStripMenuItem";
             this.useSuggestionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Space)));
@@ -195,6 +199,7 @@
             // 
             // editOriginalValueToolStripMenuItem
             // 
+            this.editOriginalValueToolStripMenuItem.Enabled = false;
             this.editOriginalValueToolStripMenuItem.Name = "editOriginalValueToolStripMenuItem";
             this.editOriginalValueToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Z";
             this.editOriginalValueToolStripMenuItem.Size = new System.Drawing.Size(219, 22);
@@ -315,38 +320,6 @@
             this.grid.SelectionChanged += new System.EventHandler(this.grid_SelectionChanged);
             this.grid.KeyDown += new System.Windows.Forms.KeyEventHandler(this.grid_KeyDown);
             // 
-            // textDataGridViewTextBoxColumn
-            // 
-            this.textDataGridViewTextBoxColumn.DataPropertyName = "Text";
-            this.textDataGridViewTextBoxColumn.FillWeight = 159.2809F;
-            this.textDataGridViewTextBoxColumn.HeaderText = "Text";
-            this.textDataGridViewTextBoxColumn.Name = "textDataGridViewTextBoxColumn";
-            this.textDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // Type
-            // 
-            this.Type.DataPropertyName = "UnknownType";
-            this.Type.FillWeight = 105.2321F;
-            this.Type.HeaderText = "Type";
-            this.Type.Name = "Type";
-            this.Type.ReadOnly = true;
-            // 
-            // countDataGridViewTextBoxColumn
-            // 
-            this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
-            this.countDataGridViewTextBoxColumn.FillWeight = 35.99567F;
-            this.countDataGridViewTextBoxColumn.HeaderText = "Count";
-            this.countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
-            this.countDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // Suggestion
-            // 
-            this.Suggestion.DataPropertyName = "Suggestion";
-            this.Suggestion.FillWeight = 105.2321F;
-            this.Suggestion.HeaderText = "Suggestion";
-            this.Suggestion.Name = "Suggestion";
-            this.Suggestion.ReadOnly = true;
-            // 
             // Ignore
             // 
             this.Ignore.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
@@ -384,17 +357,6 @@
             this.Copy.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.Copy.ToolTipText = "Copy to fixed text";
             this.Copy.Width = 20;
-            // 
-            // FixedText
-            // 
-            this.FixedText.DataPropertyName = "FixedText";
-            this.FixedText.FillWeight = 105.2321F;
-            this.FixedText.HeaderText = "FixedText";
-            this.FixedText.Name = "FixedText";
-            // 
-            // wordEntryBindingSource
-            // 
-            this.wordEntryBindingSource.DataSource = typeof(EpubSpellChecker.WordEntry);
             // 
             // splitContainer1
             // 
@@ -468,20 +430,6 @@
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 22F));
             this.tableLayoutPanel2.Size = new System.Drawing.Size(808, 146);
             this.tableLayoutPanel2.TabIndex = 1;
-            // 
-            // lstOccurrences
-            // 
-            this.lstOccurrences.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstOccurrences.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.lstOccurrences.FormattingEnabled = true;
-            this.lstOccurrences.Location = new System.Drawing.Point(3, 3);
-            this.lstOccurrences.Name = "lstOccurrences";
-            this.tableLayoutPanel2.SetRowSpan(this.lstOccurrences, 2);
-            this.lstOccurrences.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lstOccurrences.Size = new System.Drawing.Size(776, 118);
-            this.lstOccurrences.TabIndex = 0;
-            this.lstOccurrences.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstOccurrences_DrawItem);
-            this.lstOccurrences.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstOccurrences_KeyDown);
             // 
             // statusStrip1
             // 
@@ -610,6 +558,63 @@
             this.dataGridViewImageColumn3.ToolTipText = "Copy to fixed text";
             this.dataGridViewImageColumn3.Width = 20;
             // 
+            // textDataGridViewTextBoxColumn
+            // 
+            this.textDataGridViewTextBoxColumn.DataPropertyName = "Text";
+            this.textDataGridViewTextBoxColumn.FillWeight = 159.2809F;
+            this.textDataGridViewTextBoxColumn.HeaderText = "Text";
+            this.textDataGridViewTextBoxColumn.Name = "textDataGridViewTextBoxColumn";
+            this.textDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // Type
+            // 
+            this.Type.DataPropertyName = "UnknownType";
+            this.Type.FillWeight = 105.2321F;
+            this.Type.HeaderText = "Type";
+            this.Type.Name = "Type";
+            this.Type.ReadOnly = true;
+            // 
+            // countDataGridViewTextBoxColumn
+            // 
+            this.countDataGridViewTextBoxColumn.DataPropertyName = "Count";
+            this.countDataGridViewTextBoxColumn.FillWeight = 35.99567F;
+            this.countDataGridViewTextBoxColumn.HeaderText = "Count";
+            this.countDataGridViewTextBoxColumn.Name = "countDataGridViewTextBoxColumn";
+            this.countDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // Suggestion
+            // 
+            this.Suggestion.DataPropertyName = "Suggestion";
+            this.Suggestion.FillWeight = 105.2321F;
+            this.Suggestion.HeaderText = "Suggestion";
+            this.Suggestion.Name = "Suggestion";
+            this.Suggestion.ReadOnly = true;
+            // 
+            // FixedText
+            // 
+            this.FixedText.DataPropertyName = "FixedText";
+            this.FixedText.FillWeight = 105.2321F;
+            this.FixedText.HeaderText = "FixedText";
+            this.FixedText.Name = "FixedText";
+            // 
+            // wordEntryBindingSource
+            // 
+            this.wordEntryBindingSource.DataSource = typeof(EpubSpellChecker.WordEntry);
+            // 
+            // lstOccurrences
+            // 
+            this.lstOccurrences.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstOccurrences.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.lstOccurrences.FormattingEnabled = true;
+            this.lstOccurrences.Location = new System.Drawing.Point(3, 3);
+            this.lstOccurrences.Name = "lstOccurrences";
+            this.tableLayoutPanel2.SetRowSpan(this.lstOccurrences, 2);
+            this.lstOccurrences.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
+            this.lstOccurrences.Size = new System.Drawing.Size(776, 118);
+            this.lstOccurrences.TabIndex = 0;
+            this.lstOccurrences.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.lstOccurrences_DrawItem);
+            this.lstOccurrences.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lstOccurrences_KeyDown);
+            // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "UnknownType";
@@ -632,7 +637,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.grid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.wordEntryBindingSource)).EndInit();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -643,6 +647,7 @@
             this.tableLayoutPanel2.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.wordEntryBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

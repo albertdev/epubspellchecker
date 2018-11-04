@@ -88,6 +88,8 @@ namespace EpubSpellChecker
 
                 // continue with loading suggestions for each unknown word
                 FillSuggestions(wes);
+
+                CheckEditMenuItemAvailibility();
             });
         }
 
@@ -214,7 +216,9 @@ namespace EpubSpellChecker
                 if (force && bs.Filter == targetFilter)
                     bs.RemoveFilter();
                 bs.Filter = targetFilter;
+
             }
+            CheckEditMenuItemAvailibility();
         }
 
         /// <summary>
@@ -990,6 +994,17 @@ namespace EpubSpellChecker
             {
                 UseSuggestionForEntry(grid.CurrentCell.RowIndex);
             }
+        }
+
+        private void CheckEditMenuItemAvailibility()
+        {
+            bool enableEditMenu = grid.CurrentCell != null;
+
+            copyCellValueToolStripMenuItem.Enabled = enableEditMenu;
+            ignoreToolStripMenuItem.Enabled = enableEditMenu;
+            addToDictionaryToolStripMenuItem.Enabled = enableEditMenu;
+            useSuggestionToolStripMenuItem.Enabled = enableEditMenu;
+            editOriginalValueToolStripMenuItem.Enabled = enableEditMenu;
         }
     }
 }
