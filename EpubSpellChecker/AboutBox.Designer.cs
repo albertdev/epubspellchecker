@@ -126,10 +126,10 @@
             this.lnkUrl.AutoSize = true;
             this.lnkUrl.Location = new System.Drawing.Point(3, 213);
             this.lnkUrl.Name = "lnkUrl";
-            this.lnkUrl.Size = new System.Drawing.Size(191, 13);
+            this.lnkUrl.Size = new System.Drawing.Size(240, 13);
             this.lnkUrl.TabIndex = 25;
             this.lnkUrl.TabStop = true;
-            this.lnkUrl.Text = "http://epubspellchecker.codeplex.com";
+            this.lnkUrl.Text = "https://github.com/drake7707/epubspellchecker";
             this.lnkUrl.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkUrl_LinkClicked);
             // 
             // AboutBox
