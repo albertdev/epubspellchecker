@@ -711,8 +711,7 @@ namespace EpubSpellChecker
         /// <param name="e"></param>
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Are you sure you want to exit, all unsaved changes will be lost?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                this.Close();
+            this.Close();
         }
 
         /// <summary>
@@ -1005,6 +1004,18 @@ namespace EpubSpellChecker
             addToDictionaryToolStripMenuItem.Enabled = enableEditMenu;
             useSuggestionToolStripMenuItem.Enabled = enableEditMenu;
             editOriginalValueToolStripMenuItem.Enabled = enableEditMenu;
+        }
+
+        /// <summary>
+        /// Asks to save changes before closing, at least when an Epub file has been opened.
+        /// </summary>
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            if (currentEpub == null)
+                return;
+
+            var result = MessageBox.Show(this, "Are you sure you want to exit, all unsaved changes will be lost?", "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            e.Cancel = result == System.Windows.Forms.DialogResult.No;
         }
     }
 }
