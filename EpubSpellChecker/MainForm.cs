@@ -299,17 +299,25 @@ namespace EpubSpellChecker
             if (e.RowIndex < 0 || e.RowIndex >= grid.RowCount && grid.Rows[e.RowIndex] == null)
                 return;
 
+            // Since we disallow Ctrl / Shift + Click the selection will always be reset to the row which got clicked
+            int[] selectedRow = new int[] { e.RowIndex };
+
             if (grid.Columns[e.ColumnIndex].Name == "Ignore")
             {
-                IgnoreEntry(e.RowIndex);
+                // Grab ignore flag status from clicked entry, then use the inverse value
+                var we = grid.Rows[e.RowIndex].DataBoundItem as WordEntry;
+                if (we == null)
+                    return;
+                bool originalIgnoreValue = we.Ignore;
+                IgnoreEntry(selectedRow, !originalIgnoreValue);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "AddToDictionary")
             {
-                AddToDictionaryAndIgnoreEntry(e.RowIndex);
+                AddToDictionaryAndIgnoreEntry(selectedRow);
             }
             else if (grid.Columns[e.ColumnIndex].Name == "Copy")
             {
-                UseSuggestionForEntry(e.RowIndex);
+                UseSuggestionForEntry(selectedRow);
             }
         }
 
@@ -458,15 +466,21 @@ namespace EpubSpellChecker
                 {
                     if (grid.CurrentCell.OwningColumn.Name == "Ignore")
                     {
-                        IgnoreEntry(grid.CurrentCell.RowIndex);
+                        // Grab ignore flag status from last selected entry, then use the inverse value
+                        // for the entire selection
+                        var we = grid.Rows[grid.CurrentCell.RowIndex].DataBoundItem as WordEntry;
+                        if (we == null)
+                            return;
+                        bool originalIgnoreValue = we.Ignore;
+                        IgnoreEntry(GetSelectedRowIndexes(), !originalIgnoreValue);
                     }
                     else if (grid.CurrentCell.OwningColumn.Name == "AddToDictionary")
                     {
-                        AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
+                        AddToDictionaryAndIgnoreEntry(GetSelectedRowIndexes());
                     }
                     else if (grid.CurrentCell.OwningColumn.Name == "Copy")
                     {
-                        UseSuggestionForEntry(grid.CurrentCell.RowIndex);
+                        UseSuggestionForEntry(GetSelectedRowIndexes());
                     }
 
                     e.Handled = true;
@@ -474,7 +488,7 @@ namespace EpubSpellChecker
                 // if Control-A is pressed with selection but not when editing -> add to dictionary
                 else if (e.Control && e.KeyCode == Keys.A)
                 {
-                    AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
+                    AddToDictionaryAndIgnoreEntry(GetSelectedRowIndexes());
                     e.Handled = true;
                 }
                 // if Control-Z is pressed on any cell of the row -> copy original to fixed text and start editing
@@ -500,56 +514,65 @@ namespace EpubSpellChecker
             }
         }
 
-        private void IgnoreEntry(int rowIndex)
+        private void IgnoreEntry(int[] rowIndexes, bool ignoredFlag)
         {
-            // find bound word entry or return if none available
-            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
-            if (we == null)
-                return;
+            foreach (var rowIndex in rowIndexes)
+            {
+                // find bound word entry or return if none available
+                var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+                if (we == null)
+                    continue;
 
-            // toggle ignore of the word entry and redraw the row
-            we.Ignore = !we.Ignore;
-            grid.InvalidateRow(rowIndex);
+                // toggle ignore of the word entry and redraw the row
+                we.Ignore = ignoredFlag;
+                grid.InvalidateRow(rowIndex);
+            }
             UpdateStatistics();
         }
 
-        private void UseSuggestionForEntry(int rowIndex)
+        private void UseSuggestionForEntry(int[] rowIndexes)
         {
-            // find bound word entry or return if none available
-            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
-            if (we == null)
-                return;
+            foreach (var rowIndex in rowIndexes)
+            {
+                // find bound word entry or return if none available
+                var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+                if (we == null)
+                    return;
 
-            // copy either the suggestion or the text if the suggestion is empty to the fixed text column for the current row
-            if (string.IsNullOrEmpty(we.Suggestion))
-                we.FixedText = we.Text;
-            else
-                we.FixedText = we.Suggestion;
+                // copy either the suggestion or the text if the suggestion is empty to the fixed text column for the current row
+                if (string.IsNullOrEmpty(we.Suggestion))
+                    we.FixedText = we.Text;
+                else
+                    we.FixedText = we.Suggestion;
 
-            we.Ignore = false;
+                we.Ignore = false;
 
-            // redraw the row
-            grid.InvalidateRow(rowIndex);
+                // redraw the row
+                grid.InvalidateRow(rowIndex);
+            }
             UpdateStatistics();
         }
 
-        private void AddToDictionaryAndIgnoreEntry(int rowIndex)
+        private void AddToDictionaryAndIgnoreEntry(int[] rowIndexes)
         {
-            // find bound word entry or return if none available
-            var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
-            if (we == null)
-                return;
+            foreach (var rowIndex in rowIndexes)
+            {
+                // find bound word entry or return if none available
+                var we = grid.Rows[rowIndex].DataBoundItem as WordEntry;
+                if (we == null)
+                    continue;
 
-            // add the word to the custom dictionary
-            we.IsUnknownWord = false;
-            we.UnknownType = "";
-            we.Suggestion = we.Text;
-            we.FixedText = "";
+                // add the word to the custom dictionary
+                we.IsUnknownWord = false;
+                we.UnknownType = "";
+                we.Suggestion = we.Text;
+                we.FixedText = "";
 
-            manager.AddToDictionary(we.Text);
+                manager.AddToDictionary(we.Text);
 
-            //redraw the row
-            grid.InvalidateRow(rowIndex);
+                //redraw the row
+                grid.InvalidateRow(rowIndex);
+            }
             UpdateStatistics();
         }
 
@@ -959,7 +982,13 @@ namespace EpubSpellChecker
         {
             if (grid.CurrentCell != null)
             {
-                IgnoreEntry(grid.CurrentCell.RowIndex);
+                // Grab ignore flag status from last selected entry, then use the inverse value
+                // for the entire selection
+                var we = grid.Rows[grid.CurrentCell.RowIndex].DataBoundItem as WordEntry;
+                if (we == null)
+                    return;
+                bool originalIgnoreValue = we.Ignore;
+                IgnoreEntry(GetSelectedRowIndexes(), !originalIgnoreValue);
             }
         }
 
@@ -983,7 +1012,8 @@ namespace EpubSpellChecker
         {
             if (grid.CurrentCell != null)
             {
-                AddToDictionaryAndIgnoreEntry(grid.CurrentCell.RowIndex);
+                int[] selectedRows = GetSelectedRowIndexes();
+                AddToDictionaryAndIgnoreEntry(selectedRows);
             }
         }
 
@@ -991,10 +1021,13 @@ namespace EpubSpellChecker
         {
             if (grid.CurrentCell != null)
             {
-                UseSuggestionForEntry(grid.CurrentCell.RowIndex);
+                UseSuggestionForEntry(GetSelectedRowIndexes());
             }
         }
 
+        /// <summary>
+        /// Enables or disables the items in the edit menu depending on whether any items are displayed in the grid.
+        /// </summary>
         private void CheckEditMenuItemAvailibility()
         {
             bool enableEditMenu = grid.CurrentCell != null;
@@ -1004,6 +1037,20 @@ namespace EpubSpellChecker
             addToDictionaryToolStripMenuItem.Enabled = enableEditMenu;
             useSuggestionToolStripMenuItem.Enabled = enableEditMenu;
             editOriginalValueToolStripMenuItem.Enabled = enableEditMenu;
+        }
+
+        /// <summary>
+        /// Returns the row indexes for all the cells which the user selected.
+        /// </summary>
+        /// <returns></returns>
+        private int[] GetSelectedRowIndexes()
+        {
+            return grid.SelectedCells.Cast<DataGridViewCell>()
+                .Select(el => el.RowIndex)
+                // The grid allows multiple columns to be selected so filter cells whose row index
+                // is one which we already encountered earlier.
+                .Distinct()
+                .ToArray();
         }
 
         /// <summary>
