@@ -75,7 +75,8 @@ namespace EpubSpellChecker
         /// </summary>
         public string Suggestion
         {
-            get { return suggestion; }
+            // User added word to dictionary so replace suggestion with informative message
+            get { return IsUserAdded ? "(from custom dictionary)" : suggestion; }
             set { if (suggestion != value) { suggestion = value; NotifyPropertyChanged("Suggestion"); } }
         }
 
@@ -94,6 +95,11 @@ namespace EpubSpellChecker
         /// Flags if the word is recognized by the dictionary, true if it isn't
         /// </summary>
         public bool IsUnknownWord { get; set; }
+
+        /// <summary>
+        /// Flags if the word is added to the custom dictionary
+        /// </summary>
+        public bool IsUserAdded { get; set; }
 
         private bool ignore;
         /// <summary>

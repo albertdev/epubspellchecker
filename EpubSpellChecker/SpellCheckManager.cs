@@ -954,10 +954,25 @@ namespace EpubSpellChecker
         /// Adds a word the the custom dictionary
         /// </summary>
         /// <param name="item">The item to add to the dictionary</param>
-        public void AddToDictionary(string item)
+        /// <returns>a bool to indicate whether the word is a new one</returns>
+        public bool AddToDictionary(string item)
         {
+            if (customDictionary.Contains(item) || fullDictionary.Contains(item))
+                return false;
+
             customDictionary.Add(item.ToLower());
             fullDictionary.Add(item.ToLower());
+            return true;
+        }
+
+        /// <summary>
+        /// Remove a word from the custom dictionary.
+        /// </summary>
+        /// <param name="item">The item to remove from the dictionary</param>
+        public void RemoveFromDictionary(string item)
+        {
+            customDictionary.Remove(item.ToLower());
+            fullDictionary.Remove(item.ToLower());
         }
 
         /// <summary>

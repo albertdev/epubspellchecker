@@ -523,6 +523,11 @@ namespace EpubSpellChecker
                 if (we == null)
                     continue;
 
+                if (we.IsUserAdded)
+                {
+                    UndoAddToDictionary(we);
+                }
+
                 // toggle ignore of the word entry and redraw the row
                 we.Ignore = ignoredFlag;
                 grid.InvalidateRow(rowIndex);
@@ -539,6 +544,11 @@ namespace EpubSpellChecker
                 if (we == null)
                     return;
 
+                if (we.IsUserAdded)
+                {
+                    UndoAddToDictionary(we);
+                }
+
                 // copy either the suggestion or the text if the suggestion is empty to the fixed text column for the current row
                 if (string.IsNullOrEmpty(we.Suggestion))
                     we.FixedText = we.Text;
@@ -553,6 +563,13 @@ namespace EpubSpellChecker
             UpdateStatistics();
         }
 
+        private void UndoAddToDictionary(WordEntry we)
+        {
+            manager.RemoveFromDictionary(we.Text);
+            we.IsUserAdded = false;
+            we.IsUnknownWord = true;
+        }
+
         private void AddToDictionaryAndIgnoreEntry(int[] rowIndexes)
         {
             foreach (var rowIndex in rowIndexes)
@@ -562,13 +579,18 @@ namespace EpubSpellChecker
                 if (we == null)
                     continue;
 
-                // add the word to the custom dictionary
-                we.IsUnknownWord = false;
-                we.UnknownType = "";
-                we.Suggestion = we.Text;
-                we.FixedText = "";
+                // add the word to the custom dictionary (if already present or something matching a rule we do nothing)
+                if (!we.IsUnknownWord)
+                    continue;
+                var isNewWord = manager.AddToDictionary(we.Text);
+                if (!isNewWord)
+                    continue;
 
-                manager.AddToDictionary(we.Text);
+                we.IsUnknownWord = false;
+                we.IsUserAdded = true;
+                // Make sure the entry can be colored green and colors gray if ignored later on
+                we.FixedText = "";
+                we.Ignore = false;
 
                 //redraw the row
                 grid.InvalidateRow(rowIndex);
@@ -600,6 +622,11 @@ namespace EpubSpellChecker
             var we = currentRow.DataBoundItem as WordEntry;
             if (we == null)
                 return;
+
+            if (we.IsUserAdded)
+            {
+                UndoAddToDictionary(we);
+            }
 
             we.FixedText = we.Text;
 
