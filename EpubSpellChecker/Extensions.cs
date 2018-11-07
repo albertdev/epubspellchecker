@@ -221,7 +221,12 @@ namespace EpubSpellChecker
             int apostrapheLocation = word.IndexOf('\'');
             if (apostrapheLocation != -1)
             {
-                word = word.Substring(0, apostrapheLocation);
+                string suffix = word.Substring(apostrapheLocation + 1, word.Length - apostrapheLocation - 1);
+                // Check to see whether suffix is a common one, anything longer doesn't count
+                if (suffix == "t" || suffix == "ve" || suffix == "s" || suffix == "d" || suffix == String.Empty)
+                {
+                    word = word.Substring(0, apostrapheLocation);
+                }
             }
 
             return word;
