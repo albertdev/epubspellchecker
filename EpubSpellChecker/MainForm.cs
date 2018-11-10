@@ -516,6 +516,10 @@ namespace EpubSpellChecker
 
         private void IgnoreEntry(int[] rowIndexes, bool ignoredFlag)
         {
+            // Reset cell editing before we start replacing cell contents
+            grid.CancelEdit();
+            grid.EndEdit();
+
             foreach (var rowIndex in rowIndexes)
             {
                 // find bound word entry or return if none available
@@ -537,6 +541,9 @@ namespace EpubSpellChecker
 
         private void UseSuggestionForEntry(int[] rowIndexes)
         {
+            // Reset cell editing before we start replacing cell contents
+            grid.EndEdit();
+
             foreach (var rowIndex in rowIndexes)
             {
                 // find bound word entry or return if none available
@@ -572,6 +579,9 @@ namespace EpubSpellChecker
 
         private void AddToDictionaryAndIgnoreEntry(int[] rowIndexes)
         {
+            // Reset cell editing before we start replacing cell contents
+            grid.EndEdit();
+
             foreach (var rowIndex in rowIndexes)
             {
                 // find bound word entry or return if none available
@@ -612,6 +622,9 @@ namespace EpubSpellChecker
 
         private void CopyOriginalAndEditFixedCell(int rowIndex)
         {
+            // Reset value if currently editing
+            grid.EndEdit();
+
             // if the row is valid
             if (rowIndex < 0 || rowIndex >= grid.RowCount && grid.Rows[rowIndex] == null)
                 return;
