@@ -20,9 +20,10 @@ namespace EpubSpellChecker
         {
             if (we.IsUnknownWord && !we.Ignore)
             {
-                // starts with capital and has to be proper cased (not all upper)
+                // all occurences of word start with capital and use the proper case (not all upper)
                 // and the word is not only used at the start of a sentence
-                if (we.Text.StartsWithCapital() && we.Text == we.Text.ProperCase() && !we.Occurrences.All(occ => occ.IsStartOfSentence))
+                var textWithProperCase = we.Text.ProperCase();
+                if (we.Occurrences.All(occ => occ.Text.StartsWithCapital() && occ.Text == textWithProperCase) && !we.Occurrences.All(occ => occ.IsStartOfSentence))
                 {
                     we.UnknownType = "Possible name?";
                     we.Ignore = true;
